@@ -1,0 +1,1 @@
+curl -X POST "http://${SERVER_IP}:${SERVER_PORT}/plot/" -d "chat=plot a circle"
