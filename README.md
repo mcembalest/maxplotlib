@@ -8,10 +8,10 @@ Example:
 maxplotlib "textbook-quality art with sine and cosine waves"
 ```
 
-| ![Example Output Option 1](examples/example_output/option0.png) | ![Example Output Option 2](examples/example_output/option1.png) |
+| ![Example Output Option 1](https://mcembalest.github.io/maxplotlib/examples/example_output/option0.png) | ![Example Output Option 2](https://mcembalest.github.io/maxplotlib/examples/example_output/option1.png) |
 |:------------------------------------------:|:------------------------------------------:|
 |               **Option 1**                  |               **Option 2**                  |
-| ![Example Output Option 3](examples/example_output/option2.png) | ![Example Output Option 4](examples/example_output/option3.png) |
+| ![Example Output Option 3](https://mcembalest.github.io/maxplotlib/examples/example_output/option2.png) | ![Example Output Option 4](https://mcembalest.github.io/maxplotlib/examples/example_output/option3.png) |
 |               **Option 3**                  |               **Option 4**                  |
 
 

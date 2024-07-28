@@ -13,20 +13,21 @@ def main():
     args = parser.parse_args()
 
     os.makedirs(args.output, exist_ok=True)
+    os.makedirs(f'{args.output}/{args.prompt}', exist_ok=True)
 
     curl_command = [
         'curl', '-s', '-X', 'POST',
         f'http://{server_ip}:8000/plot/', '-F',
-        f'prompt={args.prompt}', '-o', f'{args.output}/response.json'
+        f'prompt={args.prompt}', '-o', f'{args.output}/{args.prompt}/response.json'
     ]
     subprocess.run(curl_command, check=True)
 
-    with open(f'{args.output}/response.json', 'r') as file:
+    with open(f'{args.output}/{args.prompt}/response.json', 'r') as file:
         data = json.load(file)
         image_data = data['images']
         image_bytes = [base64.b64decode(d) for d in image_data]
         for i, im in enumerate(image_bytes):
-            with open(f'{args.output}/option{i}.png', 'wb') as img_file:
+            with open(f'{args.output}/{args.prompt}/option{i}.png', 'wb') as img_file:
                 img_file.write(im)
     print(f"Image saved in '{args.output}/'")
 
