@@ -1,26 +1,20 @@
-import base64
-from fastapi import FastAPI, Form, HTTPException
-from fastapi.responses import StreamingResponse, JSONResponse
-from io import BytesIO
-from maxplotlib.plot import plot
+from fastapi import FastAPI, Form
+from fastapi.responses import JSONResponse
 from time import time
+
+from maxplotlib.run import run, get_images
 
 app = FastAPI(debug=False)
 
-def encode_image_to_base64(image):
-    img_byte_arr = BytesIO()
-    image.save(img_byte_arr, format='PNG')
-    img_byte_arr.seek(0)
-    return base64.b64encode(img_byte_arr.getvalue()).decode('utf-8')
+def validate_user_input(user_input: str, max_user_input_chars: int = 2000) -> str:
+    if len(user_input) > max_user_input_chars:
+        raise ValueError(f"Input is {len(user_input)} chars, maximum is {max_user_input_chars} characters.")
+    return user_input
 
-def stream_text_result(result, media_type="text/plain"):
-    try:
-        return StreamingResponse(result, media_type=media_type)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/plot/")
 async def plot_api(prompt: str = Form(...)):
-    image = plot(prompt)
-    encoded_image = encode_image_to_base64(image)
-    return JSONResponse(content={"timestamp": time(), "prompt": prompt, "image": encoded_image})
+    prompt = validate_user_input(prompt)
+    matplotlib_scripts = run(prompt)
+    images = get_images(matplotlib_scripts)
+    return JSONResponse(content={"timestamp": time(), "prompt": prompt, "python_scripts": matplotlib_scripts, "images": images})

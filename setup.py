@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='maxplotlib',
-    version='0.1.1',
+    version='0.1.4',
     author='Max Cembalest',
     author_email='macembalest@gmail.com',
     packages=find_packages(where="src"),
@@ -17,7 +17,9 @@ setup(
             "matplotlib",
             "mlx_lm",
             "numpy",
-            "pillow"
+            "pillow",
+            "plotly",
+            "torch"
         ]
     },
     python_requires='>=3.8',  # Minimum version requirement of Python
@@ -35,7 +37,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'maxplot=maxplotlib.cli:main',
+            'maxplotlib=maxplotlib.cli:main',
         ],
     },
 )

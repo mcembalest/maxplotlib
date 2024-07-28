@@ -5,11 +5,11 @@ import os
 import subprocess
 
 def main():
-    server_ip = os.getenv('SERVER_IP', 'default_server_ip_here')
+    server_ip = os.getenv('SERVER_IP')
 
-    parser = argparse.ArgumentParser(description="CLI tool to make and save plots using an external service.")
+    parser = argparse.ArgumentParser()
     parser.add_argument('prompt', type=str, help='Prompt describing the plot to generate.')
-    parser.add_argument('--output', type=str, default='output', help='Output directory to save the image.')
+    parser.add_argument('--output', type=str, default='maxplotlib_output', help='Output directory to save the image.')
     args = parser.parse_args()
 
     os.makedirs(args.output, exist_ok=True)
@@ -23,10 +23,11 @@ def main():
 
     with open(f'{args.output}/response.json', 'r') as file:
         data = json.load(file)
-        image_data = data['image']
-        image_bytes = base64.b64decode(image_data)
-        with open(f'{args.output}/output.png', 'wb') as img_file:
-            img_file.write(image_bytes)
+        image_data = data['images']
+        image_bytes = [base64.b64decode(d) for d in image_data]
+        for i, im in enumerate(image_bytes):
+            with open(f'{args.output}/option{i}.png', 'wb') as img_file:
+                img_file.write(im)
     print(f"Image saved in '{args.output}/'")
 
 if __name__ == '__main__':
