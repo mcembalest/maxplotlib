@@ -5,7 +5,7 @@ import numpy as np
 from mlx_lm import load, generate
 from PIL import Image
 
-model, tokenizer = load("mlx-community/Meta-Llama-3.1-8B-Instruct-4bit")
+model, tokenizer = load("mlx-community/Meta-Llama-3.1-70B-Instruct-4bit")
 
 def plot(user_message: str) -> Image:
 
