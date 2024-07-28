@@ -2,22 +2,24 @@ from setuptools import setup, find_packages
 
 setup(
     name='maxplotlib',
-    version='0.1.0',
+    version='0.1.1',
     author='Max Cembalest',
     author_email='macembalest@gmail.com',
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     url='http://github.com/mcembalest/maxplotlib',
     license='LICENSE',
-    description='Custom MLX-augmented visualization tool by Max Cembalest',
+    description='Autoviz API by Max Cembalest',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    install_requires=[
-        "matplotlib",
-        "mlx_lm",
-        "numpy",
-        "pillow"
-    ],
+    extras_require={
+        'server': [
+            "matplotlib",
+            "mlx_lm",
+            "numpy",
+            "pillow"
+        ]
+    },
     python_requires='>=3.8',  # Minimum version requirement of Python
     classifiers=[
         'Development Status :: 3 - Alpha',

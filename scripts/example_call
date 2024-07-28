@@ -1,4 +1,0 @@
-#!/bin/bash
-curl -s -X POST http://${SERVER_IP}:${SERVER_PORT}/plot/ -F "prompt=write python to plot a circle" -o "./output/response.json"
-jq -r '.image' "./output/response.json" | base64 --decode > "./output/output.png"
-echo "Image saved in './output/'"
