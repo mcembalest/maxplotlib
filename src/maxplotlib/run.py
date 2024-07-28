@@ -3,12 +3,12 @@ import io
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from mlx_lm import generate
+from mlx_lm import load, generate
 import numpy as np
 from PIL import Image
-from typing import List
+from typing import List, Tuple
 
-from .llm import batch_generate, model, tokenizer
+from .llm.generation import batch_generate
 
 # llama 3.1 info from meta prompt guide
 # https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1
@@ -73,7 +73,7 @@ def user_message_to_python_scripts(
     idea_temp: float = 0.2,
     max_script_tokens: int = 1000,
     script_temp: float = 0.0
-) -> str:
+) -> Tuple[List[str], List[str]]:
     """
     Convert the user message into multiple options for matplotlib-image-generating scripts
 
@@ -82,6 +82,7 @@ def user_message_to_python_scripts(
         max_tokens (int): max_tokens
         num_parallel (int): number of parallel LLM workers
     """
+    model, tokenizer = load("mlx-community/Meta-Llama-3.1-8B-Instruct-8bit")
     idea_prompt = brainstorm_matplotlib_template.format(user_message=user_message, num_ideas=num_ideas)
     ideas = generate(
         model, tokenizer, 
@@ -95,38 +96,58 @@ def user_message_to_python_scripts(
     prompts = [matplotlib_numpy_prompt_template.format(user_message=idea) for idea in ideas]
     responses = batch_generate(model, tokenizer, prompts=prompts, max_tokens=max_script_tokens, verbose=True, temp=script_temp)
     res = []
+    captions = []
     for r in responses:
         if "<|python_tag|>" in r and "<|eom_id|>" in r and "plt.show()" in r:
-            print("PARSING PYTHON TAG")
+            print("parsing from <|python_tag|>")
             python_code_start_index = r.find("<|python_tag|>") + len("<|python_tag|>")
             python_code_end_index = r.find("<|eom_id|>", python_code_start_index)
             python_code = r[python_code_start_index:python_code_end_index].strip()
+            caption = r.replace(python_code, "").replace("<|python_tag|>", "").replace("<|eom_id|>", "").replace("<|start_header_id|>assistant<|end_header_id|>", "")
         elif "```python" in r and "plt.show()" in r:
-            print("PARSING PYTHON MARKDOWN")
+            print("parsing from ```python")
             python_code_start_index = r.find("```python") + len("```python")
             python_code_end_index = r.find("```", python_code_start_index)
             python_code = r[python_code_start_index:python_code_end_index].strip()
+            caption = r.replace(python_code, "").replace("```python", "").replace("```", "").replace("<|start_header_id|>assistant<|end_header_id|>", "")
         else: # error message plot
-            print("!!! NO PARSING PYTHON")
+            print("!!! NO PARSABLE PYTHON")
             python_code = custom_maxplotlib_error_plot_script
+            caption = ""
         res.append(python_code)
-    return res
+        captions.append(caption)
+    return res, captions
 
-def matplotlib_script_to_image(python_code: str) -> Image:
+def matplotlib_script_to_image(python_code: str, caption: str = "") -> Image:
     """
     Execute the input string as python code that produces an image with matplotlib
 
     Args:
         python_code (str): python script w/ matplotlib (& possibly numpy) code
     """
-    plt.figure()
-    local_vars = {'plt': plt, 'np': np}
+    # Create a figure with a grid layout
+    fig, ax_main = plt.subplots(figsize=(10, 8))
+
+    # Execute the user's code in the main plot
+    local_vars = {'plt': plt, 'np': np, 'ax': ax_main}
     exec(python_code, local_vars, local_vars)
-    plt.show()
+
+    # Adjust the main axes to leave room for caption
+    plt.subplots_adjust(bottom=0.2)
+
+    # Add an axes at the bottom for the caption
+    ax_caption = fig.add_axes([0.1, 0.01, 0.8, 0.1], facecolor='lightgrey')
+    ax_caption.axis('off')  # Turn off axis lines and labels
+    ax_caption.text(0.5, 0.5, caption, ha='center', va='center', wrap=True, fontsize=12, color='black')
+
+    # Save the figure to a buffer
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight')
     buf.seek(0)
-    plt.close()
+
+    # Close the plot to free memory
+    plt.close(fig)
+
     return Image.open(buf)
 
 def image_to_base64(image):
@@ -135,12 +156,19 @@ def image_to_base64(image):
     img_byte_arr.seek(0)
     return base64.b64encode(img_byte_arr.getvalue()).decode('utf-8')
 
-def python_scripts_to_images(matplotlib_scripts: List[str]):
+def python_scripts_to_images(matplotlib_scripts: List[str], captions: List[str]):
+    """
+    Convert Python scripts into images and embed captions into each image.
+
+    Args:
+        matplotlib_scripts (List[str]): List of Python scripts
+        captions (List[str]): Corresponding captions for each script
+    """
     res = []
-    for s in matplotlib_scripts:
+    for script, caption in zip(matplotlib_scripts, captions):
         try:
-            res.append(image_to_base64(matplotlib_script_to_image(s)))
+            res.append(image_to_base64(matplotlib_script_to_image(script, caption)))
         except Exception as e:
-            print("~!~!~! PYTHON ERROR")
-            res.append(image_to_base64(matplotlib_script_to_image(custom_maxplotlib_error_plot_script)))
+            print("~!~!~! PYTHON ERROR", str(e))
+            res.append(image_to_base64(matplotlib_script_to_image(custom_maxplotlib_error_plot_script, "Error displaying image")))
     return res

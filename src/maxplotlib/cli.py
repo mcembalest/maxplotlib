@@ -5,7 +5,7 @@ import os
 import subprocess
 
 def main():
-    server_ip = os.getenv('SERVER_IP')
+    server_ip = os.getenv('MAXPLOTLIB_SERVER_IP')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('prompt', type=str, help='Prompt describing the plot to generate.')

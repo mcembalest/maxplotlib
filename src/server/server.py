@@ -14,6 +14,6 @@ def validate_user_input(user_input: str, max_user_input_chars: int = 2000) -> st
 @app.post("/plot/")
 async def plot_api(prompt: str = Form(...)):
     prompt = validate_user_input(prompt)
-    matplotlib_scripts = user_message_to_python_scripts(prompt)
-    images = python_scripts_to_images(matplotlib_scripts)
+    matplotlib_scripts, captions = user_message_to_python_scripts(prompt)
+    images = python_scripts_to_images(matplotlib_scripts, captions)
     return JSONResponse(content={"timestamp": time(), "prompt": prompt, "python_scripts": matplotlib_scripts, "images": images})
