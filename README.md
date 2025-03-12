@@ -8,7 +8,7 @@ Example
 maxplotlib "Show the trigonometry of music"
 ```
 
-![option3](https://github.com/user-attachments/assets/c1b6f125-cd4f-46bf-9894-ceab567e1f65)
+![example maxplotlib image](https://github.com/user-attachments/assets/f0b05633-8c13-4cb4-9292-d2321e699092)
 
 
 General:
