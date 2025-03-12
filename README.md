@@ -8,6 +8,9 @@ Example
 maxplotlib "Show the trigonometry of music"
 ```
 
+![option3](https://github.com/user-attachments/assets/c1b6f125-cd4f-46bf-9894-ceab567e1f65)
+
+
 General:
 
 ```bash
