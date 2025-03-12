@@ -6,14 +6,18 @@ import subprocess
 import uuid
 
 def main():
-    server_ip = os.getenv('MAXPLOTLIB_SERVER_IP')
-
     new_uuid = uuid.uuid4()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('prompt', type=str, help='Prompt describing the plot to generate.')
     parser.add_argument('--output', type=str, default=f'maxplotlib_output_{new_uuid}', help='Output directory to save the image.')
+    parser.add_argument('--server', type=str, help='Server IP address for the maxplotlib server. Overrides MAXPLOTLIB_SERVER_IP environment variable.', default='localhost')
     args = parser.parse_args()
+
+    # Get server IP from command line argument or environment variable
+    server_ip = args.server or os.getenv('MAXPLOTLIB_SERVER_IP')
+    if not server_ip:
+        raise ValueError("Server IP must be provided either via --server argument or MAXPLOTLIB_SERVER_IP environment variable")
 
     os.makedirs(args.output, exist_ok=True)
     os.makedirs(f'{args.output}', exist_ok=True)

@@ -20,6 +20,7 @@ def multi_hist(
         y_labels: label for each group
         x_label: label for x axis
         title: title
+
     """
     fig, ax = plt.subplots(1, 2, figsize=(10, 5))
     fig.suptitle(title, fontsize=15)
