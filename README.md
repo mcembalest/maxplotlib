@@ -5,7 +5,7 @@
 Example
 
 ```bash
-maxplotlib "textbook-quality art with sine and cosine waves"
+maxplotlib "Show the trigonometry of music"
 ```
 
 | ![Example Output Option 1](https://mcembalest.github.io/maxplotlib/examples/example_output/option0.png) | ![Example Output Option 2](https://mcembalest.github.io/maxplotlib/examples/example_output/option1.png) |
