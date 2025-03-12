@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='maxplotlib',
-    version='0.1.8',
+    version='0.1.9',
     author='Max Cembalest',
     author_email='macembalest@gmail.com',
     packages=find_packages(where="src"),
