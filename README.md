@@ -8,13 +8,6 @@ Example
 maxplotlib "Show the trigonometry of music"
 ```
 
-| ![Example Output Option 1](https://mcembalest.github.io/maxplotlib/examples/example_output/option0.png) | ![Example Output Option 2](https://mcembalest.github.io/maxplotlib/examples/example_output/option1.png) |
-|:------------------------------------------:|:------------------------------------------:|
-|               **Option 1**                  |               **Option 2**                  |
-| ![Example Output Option 3](https://mcembalest.github.io/maxplotlib/examples/example_output/option2.png) | ![Example Output Option 4](https://mcembalest.github.io/maxplotlib/examples/example_output/option3.png) |
-|               **Option 3**                  |               **Option 4**                  |
-
-
 General:
 
 ```bash
